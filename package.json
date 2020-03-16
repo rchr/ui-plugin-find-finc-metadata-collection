@@ -15,7 +15,7 @@
     "pluginType": "find-finc-metadata-collection",
     "displayName": "ui-plugin-find-finc-metadata-collection.meta.title",
     "okapiInterfaces": {
-      "finc-config/metadata-collection": "1.0"
+      "finc-config/metadata-collections": "1.0"
     }
   },
   "scripts": {
