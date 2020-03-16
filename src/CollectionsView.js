@@ -34,7 +34,7 @@ export default class CollectionsView extends React.Component {
 
   static defaultProps = {
     filterData: {},
-    visibleColumns: ['label', 'sourceId', 'status', 'solrShard', 'lastProcessed'],
+    visibleColumns: ['label', 'mdSource', 'permitted', 'filters', 'freeContent'],
   }
 
   constructor(props) {
@@ -47,18 +47,18 @@ export default class CollectionsView extends React.Component {
 
   columnMapping = {
     label: 'Label',
-    sourceId: 'SourceId',
-    status: 'Status',
-    solrShard: 'SolrShard',
-    lastProcessed: 'LastProcessed'
+    mdSource: 'MdSource',
+    permitted: 'Permitted',
+    filters: 'Filters',
+    freeContent: 'FreeContent'
   };
 
   columnWidths = {
-    label: 300,
-    sourceId: 100,
-    status: 150,
-    solrShard: 100,
-    lastProcessed: 150
+    label: 250,
+    mdSource: 250,
+    permitted: 100,
+    filters: 100,
+    freeContent: 100
   };
 
   getArrayElementsCommaSeparated = (array) => {
@@ -143,7 +143,7 @@ export default class CollectionsView extends React.Component {
   }
 
   render() {
-    const { filterData, children, contentRef, data, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
+    const { filterData, children, contentRef, contentData, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
     const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
@@ -215,7 +215,6 @@ export default class CollectionsView extends React.Component {
                         </Button>
                         <CollectionFilters
                           activeFilters={activeFilters.state}
-                          // data={data}
                           filterData={filterData}
                           filterHandlers={getFilterHandlers()}
                         />
@@ -233,7 +232,7 @@ export default class CollectionsView extends React.Component {
                       autosize
                       columnMapping={this.columnMapping}
                       columnWidths={this.columnWidths}
-                      contentData={data}
+                      contentData={contentData}
                       formatter={this.formatter}
                       id="list-collections"
                       isEmptyMessage="no results"
@@ -263,7 +262,7 @@ export default class CollectionsView extends React.Component {
 CollectionsView.propTypes = Object.freeze({
   children: PropTypes.object,
   contentRef: PropTypes.object,
-  data: PropTypes.arrayOf(PropTypes.object),
+  contentData: PropTypes.arrayOf(PropTypes.object),
   onNeedMoreData: PropTypes.func,
   onSelectRow: PropTypes.func,
   queryGetter: PropTypes.func.isRequired,
