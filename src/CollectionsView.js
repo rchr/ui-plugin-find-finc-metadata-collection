@@ -27,7 +27,6 @@ import css from './CollectionSearch.css';
 
 export default class CollectionsView extends React.Component {
   static propTypes = {
-    onChangeIndex: PropTypes.func,
     filterData: PropTypes.shape({
       mdSources: PropTypes.array,
     }),
@@ -144,7 +143,7 @@ export default class CollectionsView extends React.Component {
   }
 
   render() {
-    const { filterData, children, contentRef, data, onChangeIndex, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
+    const { filterData, children, contentRef, data, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
     const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
@@ -266,7 +265,6 @@ CollectionsView.propTypes = Object.freeze({
   contentRef: PropTypes.object,
   data: PropTypes.arrayOf(PropTypes.object),
   onNeedMoreData: PropTypes.func,
-  onChangeIndex: PropTypes.func,
   onSelectRow: PropTypes.func,
   queryGetter: PropTypes.func.isRequired,
   querySetter: PropTypes.func.isRequired,
