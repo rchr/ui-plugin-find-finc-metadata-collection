@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  get,
-  noop,
-} from 'lodash';
+// import {
+//   get,
+//   noop,
+// } from 'lodash';
+import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
   Button,
@@ -27,10 +28,13 @@ import css from './CollectionSearch.css';
 export default class CollectionsView extends React.Component {
   static propTypes = {
     onChangeIndex: PropTypes.func,
+    filterData: PropTypes.shape({
+      mdSources: PropTypes.array,
+    }),
   }
 
   static defaultProps = {
-    data: {},
+    filterData: {},
     visibleColumns: ['label', 'sourceId', 'status', 'solrShard', 'lastProcessed'],
   }
 
@@ -97,7 +101,7 @@ export default class CollectionsView extends React.Component {
           collection={collection}
           searchTerm={query.query || ''}
           filterPaneIsVisible
-          toggleFilterPane={noop}
+          toggleFilterPane={_.noop}
         />
       </div>
     );
@@ -140,7 +144,7 @@ export default class CollectionsView extends React.Component {
   }
 
   render() {
-    const { children, contentRef, data, onChangeIndex, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
+    const { filterData, children, contentRef, data, onChangeIndex, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
     const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
@@ -212,7 +216,8 @@ export default class CollectionsView extends React.Component {
                         </Button>
                         <CollectionFilters
                           activeFilters={activeFilters.state}
-                          data={data}
+                          // data={data}
+                          filterData={filterData}
                           filterHandlers={getFilterHandlers()}
                         />
                       </form>
