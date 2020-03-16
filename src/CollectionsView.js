@@ -26,12 +26,6 @@ import css from './CollectionSearch.css';
 
 
 export default class CollectionsView extends React.Component {
-  static propTypes = {
-    filterData: PropTypes.shape({
-      mdSources: PropTypes.array,
-    }),
-  }
-
   static defaultProps = {
     filterData: {},
     visibleColumns: ['label', 'mdSource', 'permitted', 'filters', 'freeContent'],
@@ -263,6 +257,9 @@ CollectionsView.propTypes = Object.freeze({
   children: PropTypes.object,
   contentRef: PropTypes.object,
   contentData: PropTypes.arrayOf(PropTypes.object),
+  filterData: PropTypes.shape({
+    mdSources: PropTypes.array,
+  }),
   onNeedMoreData: PropTypes.func,
   onSelectRow: PropTypes.func,
   queryGetter: PropTypes.func.isRequired,
