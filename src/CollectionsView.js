@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
   Button,
+  Checkbox,
   Icon,
   MultiColumnList,
   Pane,
@@ -28,7 +29,7 @@ import css from './CollectionSearch.css';
 export default class CollectionsView extends React.Component {
   static defaultProps = {
     filterData: {},
-    visibleColumns: ['label', 'mdSource', 'permitted', 'filters', 'freeContent'],
+    // visibleColumns: ['label', 'mdSource', 'permitted', 'filters', 'freeContent'],
   }
 
   constructor(props) {
@@ -36,20 +37,30 @@ export default class CollectionsView extends React.Component {
 
     this.state = {
       filterPaneIsVisible: true,
+      isAllChecked: false,
     };
   }
 
-  columnMapping = {
-    label: 'Label',
-    mdSource: 'MdSource',
-    permitted: 'Permitted',
-    filters: 'Filters',
-    freeContent: 'FreeContent'
-  };
+  // columnMapping = {
+  //   isChecked: (
+  //     <Checkbox
+  //       checked={isAllChecked}
+  //       data-test-find-records-modal-select-all
+  //       onChange={this.toggleAll}
+  //       type="checkbox"
+  //     />
+  //   ),
+  //   label: 'Label',
+  //   mdSource: 'MdSource',
+  //   permitted: 'Permitted',
+  //   filters: 'Filters',
+  //   freeContent: 'FreeContent'
+  // };
 
   columnWidths = {
-    label: 250,
-    mdSource: 250,
+    isChecked: 40,
+    label: 230,
+    mdSource: 230,
     permitted: 100,
     filters: 100,
     freeContent: 100
@@ -65,16 +76,6 @@ export default class CollectionsView extends React.Component {
     }
     return formatted;
   }
-
-  formatter = {
-    label: collection => collection.label,
-    // mdSource: collection => collection.mdSource.name,
-    mdSource: collection => _.get(collection, 'mdSource.name', '-'),
-    permitted: collection => collection.permitted,
-    selected: collection => collection.selected,
-    filters: collection => this.getArrayElementsCommaSeparated(collection.filters),
-    freeContent: collection => collection.freeContent,
-  };
 
   // fade in/out of filter-pane
   toggleFilterPane = () => {
@@ -136,16 +137,55 @@ export default class CollectionsView extends React.Component {
     return <FormattedMessage id="stripes-smart-components.searchCriteria" />;
   }
 
+  isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
+
   render() {
-    const { filterData, children, contentRef, contentData, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
+    const { filterData, children, contentRef, contentData, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection } = this.props;
+    const { checkedMap, isAllChecked } = this.state;
     const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
 
+    const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
+
+    const columnMapping = {
+      isChecked: (
+        <Checkbox
+          // checked={isAllChecked}
+          data-test-find-records-modal-select-all
+          onChange={this.toggleAll}
+          type="checkbox"
+        />
+      ),
+      label: 'Label',
+      mdSource: 'MdSource',
+      permitted: 'Permitted',
+      filters: 'Filters',
+      freeContent: 'FreeContent'
+    };
+
+    const formatter = {
+      isChecked: record => (
+        <Checkbox
+          type="checkbox"
+          // checked={Boolean(checkedMap[record.id])}
+          onChange={() => this.toggleRecord(record)}
+        />
+      ),
+      label: col => col.label,
+      // mdSource: collection => collection.mdSource.name,
+      mdSource: col => _.get(col, 'mdSource.name', '-'),
+      permitted: col => col.permitted,
+      selected: col => col.selected,
+      filters: col => this.getArrayElementsCommaSeparated(col.filters),
+      freeContent: col => col.freeContent,
+    };
+
     return (
       <div data-test-collections ref={contentRef}>
         <SearchAndSortQuery
-          initialFilterState={{ permitted: ['yes'], selected: ['yes'] }}
+          // initialFilterState={{ permitted: ['yes'], selected: ['yes'] }}
+          initialFilterState={{ freeContent: ['undetermined', 'no'] }}
           initialSearchState={{ query: '' }}
           initialSortState={{ sort: 'label' }}
           queryGetter={queryGetter}
@@ -224,10 +264,12 @@ export default class CollectionsView extends React.Component {
                   >
                     <MultiColumnList
                       autosize
-                      columnMapping={this.columnMapping}
+                      // columnMapping={this.columnMapping}
+                      columnMapping={columnMapping}
                       columnWidths={this.columnWidths}
                       contentData={contentData}
-                      formatter={this.formatter}
+                      // formatter={this.formatter}
+                      formatter={formatter}
                       id="list-collections"
                       isEmptyMessage="no results"
                       onHeaderClick={onSort}
@@ -268,5 +310,5 @@ CollectionsView.propTypes = Object.freeze({
     loaded: PropTypes.func,
     totalCount: PropTypes.func
   }),
-  visibleColumns: PropTypes.arrayOf(PropTypes.string)
+  // visibleColumns: PropTypes.arrayOf(PropTypes.string)
 });
