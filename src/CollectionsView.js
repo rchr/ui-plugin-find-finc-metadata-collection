@@ -26,6 +26,18 @@ import CollectionFilters from './CollectionFilters';
 import css from './CollectionSearch.css';
 
 
+const reduceCheckedRecords = (records, isChecked = false) => {
+  const recordsReducer = (accumulator, record) => {
+    if (isChecked) {
+      accumulator[record.id] = record;
+    }
+
+    return accumulator;
+  };
+
+  return records.reduce(recordsReducer, {});
+};
+
 export default class CollectionsView extends React.Component {
   static defaultProps = {
     filterData: {},
@@ -138,6 +150,19 @@ export default class CollectionsView extends React.Component {
     return <FormattedMessage id="stripes-smart-components.searchCriteria" />;
   }
 
+  toggleAll = () => {
+    this.setState((state, props) => {
+      const isAllChecked = !state.isAllChecked;
+      const { contentData } = props;
+      const checkedMap = reduceCheckedRecords(contentData, isAllChecked);
+
+      return {
+        checkedMap,
+        isAllChecked,
+      };
+    });
+  }
+
   toggleRecord = toggledRecord => {
     const { id } = toggledRecord;
 
@@ -163,7 +188,7 @@ export default class CollectionsView extends React.Component {
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
 
   render() {
-    const { filterData, children, contentRef, contentData, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection } = this.props;
+    const { filterData, children, contentRef, contentData, onNeedMoreData, queryGetter, querySetter, collection } = this.props;
     const { checkedMap, isAllChecked } = this.state;
     const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
@@ -174,7 +199,7 @@ export default class CollectionsView extends React.Component {
     const columnMapping = {
       isChecked: (
         <Checkbox
-          // checked={isAllChecked}
+          checked={isAllChecked}
           data-test-find-records-modal-select-all
           onChange={this.toggleAll}
           type="checkbox"
@@ -191,7 +216,7 @@ export default class CollectionsView extends React.Component {
       isChecked: record => (
         <Checkbox
           type="checkbox"
-          // checked={Boolean(checkedMap[record.id])}
+          checked={Boolean(checkedMap[record.id])}
           onChange={() => this.toggleRecord(record)}
         />
       ),
@@ -328,7 +353,7 @@ CollectionsView.propTypes = Object.freeze({
     mdSources: PropTypes.array,
   }),
   onNeedMoreData: PropTypes.func,
-  onSelectRow: PropTypes.func,
+  // onSelectRow: PropTypes.func,
   queryGetter: PropTypes.func.isRequired,
   querySetter: PropTypes.func.isRequired,
   collection: PropTypes.shape({
