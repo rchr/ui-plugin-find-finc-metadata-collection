@@ -37,6 +37,7 @@ export default class CollectionsView extends React.Component {
 
     this.state = {
       filterPaneIsVisible: true,
+      checkedMap: {},
       isAllChecked: false,
     };
   }
@@ -137,6 +138,28 @@ export default class CollectionsView extends React.Component {
     return <FormattedMessage id="stripes-smart-components.searchCriteria" />;
   }
 
+  toggleRecord = toggledRecord => {
+    const { id } = toggledRecord;
+
+    this.setState((state, props) => {
+      const { contentData } = props;
+      const wasChecked = Boolean(state.checkedMap[id]);
+      const checkedMap = { ...state.checkedMap };
+
+      if (wasChecked) {
+        delete checkedMap[id];
+      } else {
+        checkedMap[id] = toggledRecord;
+      }
+      const isAllChecked = contentData.every(record => Boolean(checkedMap[record.id]));
+
+      return {
+        checkedMap,
+        isAllChecked,
+      };
+    });
+  }
+
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
 
   render() {
@@ -184,8 +207,9 @@ export default class CollectionsView extends React.Component {
     return (
       <div data-test-collections ref={contentRef}>
         <SearchAndSortQuery
+          // intial filter not working ?!
           // initialFilterState={{ permitted: ['yes'], selected: ['yes'] }}
-          initialFilterState={{ freeContent: ['undetermined', 'no'] }}
+          initialFilterState={{}}
           initialSearchState={{ query: '' }}
           initialSortState={{ sort: 'label' }}
           queryGetter={queryGetter}
@@ -274,7 +298,8 @@ export default class CollectionsView extends React.Component {
                       isEmptyMessage="no results"
                       onHeaderClick={onSort}
                       onNeedMoreData={onNeedMoreData}
-                      onRowClick={onSelectRow}
+                      // onRowClick={onSelectRow}
+                      onRowClick={undefined}
                       sortDirection={
                         sortOrder.startsWith('-') ? 'descending' : 'ascending'
                       }
