@@ -99,12 +99,11 @@ class CollectionSearchContainer extends React.Component {
   render() {
     const { onSelectRow, resources } = this.props;
 
-    // if (this.collection) {
-    //   this.collection.update(this.props, 'metadataCollections');
-    // }
+    if (this.collection) {
+      this.collection.update(this.props, 'metadataCollections');
+    }
 
     return (
-      // <div>ahllo</div>
       <CollectionsView
         contentData={_.get(resources, 'metadataCollections.records', [])}
         onNeedMoreData={this.handleNeedMoreData}
