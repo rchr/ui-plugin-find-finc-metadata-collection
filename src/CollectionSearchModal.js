@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Modal } from '@folio/stripes/components';
+import { Modal } from '@folio/stripes/components';
 
 import CollectionSearchContainer from './CollectionSearchContainer';
 import css from './CollectionSearch.css';

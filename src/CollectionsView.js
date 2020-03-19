@@ -234,7 +234,7 @@ export default class CollectionsView extends React.Component {
         </div>
       </PaneFooter>
     );
-    
+
     const columnMapping = {
       isChecked: (
         <Checkbox
