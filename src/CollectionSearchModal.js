@@ -30,42 +30,42 @@ class CollectionSearchModal extends Component {
   };
 
   render() {
-    const footer = (
-      <div className={css.pluginModalFooter}>
-        <Button
-          marginBottom0
-          onClick={this.props.onClose}
-          className="left"
-        >
-          <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.close" />
-        </Button>
-        {(
-          <React.Fragment>
-            <div>
-              <FormattedMessage
-                id="ui-plugin-find-finc-metadata-collection.modal.totalSelected"
-                // values={{ count: checkedRecordsLength }}
-              />
-            </div>
-            <Button
-              buttonStyle="primary"
-              data-test-find-records-modal-save
-              // disabled={!checkedRecordsLength}
-              marginBottom0
-              onClick={this.saveMultiple}
-            >
-              <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.save" />
-            </Button>
-          </React.Fragment>
-        )}
-      </div>
-    );
+    // const footer = (
+    //   <div className={css.pluginModalFooter}>
+    //     <Button
+    //       marginBottom0
+    //       onClick={this.props.onClose}
+    //       className="left"
+    //     >
+    //       <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.close" />
+    //     </Button>
+    //     {(
+    //       <React.Fragment>
+    //         <div>
+    //           <FormattedMessage
+    //             id="ui-plugin-find-finc-metadata-collection.modal.totalSelected"
+    //             // values={{ count: checkedRecordsLength }}
+    //           />
+    //         </div>
+    //         <Button
+    //           buttonStyle="primary"
+    //           data-test-find-records-modal-save
+    //           // disabled={!checkedRecordsLength}
+    //           marginBottom0
+    //           onClick={this.saveMultiple}
+    //         >
+    //           <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.save" />
+    //         </Button>
+    //       </React.Fragment>
+    //     )}
+    //   </div>
+    // );
 
     return (
       <Modal
         contentClass={css.modalContent}
         enforceFocus={false}
-        footer={footer}
+        // footer={footer}
         onClose={this.props.onClose}
         size="large"
         open={this.props.open}
@@ -78,6 +78,7 @@ class CollectionSearchModal extends Component {
         <CollectionSearchContainer
           {...this.props}
           onSelectRow={this.selectCollection}
+          onClose={this.props.onClose}
         />
       </Modal>
     );

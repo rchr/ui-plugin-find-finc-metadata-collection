@@ -12,6 +12,7 @@ import {
   Icon,
   MultiColumnList,
   Pane,
+  PaneFooter,
   PaneMenu,
   Paneset,
   SearchField,
@@ -185,6 +186,10 @@ export default class CollectionsView extends React.Component {
     });
   }
 
+  saveMultiple = () => {
+    console.log(this.state.checkedMap);
+  }
+
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
 
   render() {
@@ -193,9 +198,43 @@ export default class CollectionsView extends React.Component {
     const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
+    const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
 
     const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
 
+    const footer = (
+      <PaneFooter footerClass={css.paneFooter}>
+        <div className={css.pluginModalFooter}>
+          <Button
+            marginBottom0
+            onClick={this.props.onClose}
+            className="left"
+          >
+            <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.close" />
+          </Button>
+          {(
+            <React.Fragment>
+              <div>
+                <FormattedMessage
+                  id="ui-plugin-find-finc-metadata-collection.modal.totalSelected"
+                  values={{ count: checkedRecordsLength }}
+                />
+              </div>
+              <Button
+                buttonStyle="primary"
+                data-test-find-records-modal-save
+                // disabled={!checkedRecordsLength}
+                marginBottom0
+                onClick={this.saveMultiple}
+              >
+                <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.save" />
+              </Button>
+            </React.Fragment>
+          )}
+        </div>
+      </PaneFooter>
+    );
+    
     const columnMapping = {
       isChecked: (
         <Checkbox
@@ -310,6 +349,7 @@ export default class CollectionsView extends React.Component {
                     padContent={false}
                     paneTitle="Metadata Collections"
                     paneSub={this.renderResultsPaneSubtitle(collection)}
+                    footer={footer}
                   >
                     <MultiColumnList
                       autosize
@@ -360,5 +400,6 @@ CollectionsView.propTypes = Object.freeze({
     loaded: PropTypes.func,
     totalCount: PropTypes.func
   }),
+  onClose: PropTypes.func.isRequired,
   // visibleColumns: PropTypes.arrayOf(PropTypes.string)
 });

@@ -51,6 +51,7 @@ class CollectionSearchContainer extends React.Component {
   static propTypes = {
     mutator: PropTypes.object,
     onSelectRow: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
     resources: PropTypes.object,
     stripes: PropTypes.shape({
       logger: PropTypes.object,
@@ -115,6 +116,7 @@ class CollectionSearchContainer extends React.Component {
         filterData={{
           mdSources: _.get(this.props.resources, 'mdSources.records', []),
         }}
+        onClose={this.props.onClose}
       />
     );
   }
