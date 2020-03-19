@@ -187,7 +187,22 @@ export default class CollectionsView extends React.Component {
   }
 
   saveMultiple = () => {
+    // const { stripes: { okapi } } = this.props;
+
+    // need array or object of ids?
     console.log(this.state.checkedMap);
+    const checkedCollectionIds = _.get(this.state.checkedMap, 'id', {});
+    console.log(checkedCollectionIds);
+
+    // return fetch(`${okapi.url}/finc-select/filters/:{checkedCollectionIds}/collections`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'X-Okapi-Tenant': okapi.tenant,
+    //     'X-Okapi-Token': okapi.token,
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: file,
+    // });
   }
 
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
