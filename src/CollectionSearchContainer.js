@@ -49,12 +49,14 @@ class CollectionSearchContainer extends React.Component {
   });
 
   static propTypes = {
+    filterId: PropTypes.string,
     mutator: PropTypes.object,
     onSelectRow: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     resources: PropTypes.object,
     stripes: PropTypes.shape({
       logger: PropTypes.object,
+      okapi: PropTypes.object,
     }),
   }
 
@@ -106,6 +108,7 @@ class CollectionSearchContainer extends React.Component {
 
     return (
       <CollectionsView
+        filterId={this.props.filterId}
         contentData={_.get(resources, 'metadataCollections.records', [])}
         onNeedMoreData={this.handleNeedMoreData}
         onSelectRow={onSelectRow}
@@ -117,6 +120,7 @@ class CollectionSearchContainer extends React.Component {
           mdSources: _.get(this.props.resources, 'mdSources.records', []),
         }}
         onClose={this.props.onClose}
+        stripes={this.props.stripes}
       />
     );
   }

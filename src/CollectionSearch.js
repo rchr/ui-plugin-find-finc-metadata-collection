@@ -50,6 +50,8 @@ class CollectionSearch extends Component {
   }
 
   render() {
+    // console.log(this.props.isEditable);
+    // console.log(this.props.filterId);
     const {
       buttonId,
       marginBottom0,
@@ -78,6 +80,7 @@ class CollectionSearch extends Component {
             )}
           </FormattedMessage>}
         <CollectionSearchModal
+          filterId={this.props.filterId}
           modalRef={this.modalRef}
           open={this.state.openModal}
           onClose={this.closeModal}
@@ -95,6 +98,8 @@ CollectionSearch.defaultProps = {
 
 CollectionSearch.propTypes = {
   buttonId: PropTypes.string,
+  filterId: PropTypes.string,
+  isEditable: PropTypes.bool,
   renderTrigger: PropTypes.func,
   searchLabel: PropTypes.node,
   searchButtonStyle: PropTypes.string,

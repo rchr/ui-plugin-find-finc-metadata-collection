@@ -187,22 +187,51 @@ export default class CollectionsView extends React.Component {
   }
 
   saveMultiple = () => {
+    const { stripes: { okapi }, filterId } = this.props;
     // const { stripes: { okapi } } = this.props;
-
+    // const checkedData = this.state.checkedMap;
+    // let value = {};
+    // value = Object.values(_.pickBy(this.state.checkedMap));
+    let keys = [];
+    keys = _.keys(this.state.checkedMap);
+    // console.log(checkedData);
+    // console.log('value');
+    // console.log(value);
+    // console.log('key');
+    // console.log(keys);
+    // if (checkedData) {
+    //   checkedData.map(result => {
+    //     console.log(result.id);
+    //     return result.id;
+    //   });
+    // }
     // need array or object of ids?
-    console.log(this.state.checkedMap);
-    const checkedCollectionIds = _.get(this.state.checkedMap, 'id', {});
-    console.log(checkedCollectionIds);
+    // console.log(checkedData);
+    // console.log(checkedData[0].id);
 
-    // return fetch(`${okapi.url}/finc-select/filters/:{checkedCollectionIds}/collections`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'X-Okapi-Tenant': okapi.tenant,
-    //     'X-Okapi-Token': okapi.token,
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: file,
+    // const checkedCollectionIds = _.get(this.state.checkedMap, 'id', {});
+    // console.log(checkedCollectionIds);
+    // keys.map(key => {
+    //   console.log(key);
+    //   return fetch(`${okapi.url}/finc-select/filters/${key}/collections`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'X-Okapi-Tenant': okapi.tenant,
+    //       'X-Okapi-Token': okapi.token,
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: keys,
+    //   });
     // });
+    return fetch(`${okapi.url}/finc-select/filters/${filterId}/collections`, {
+      method: 'PUT',
+      headers: {
+        'X-Okapi-Tenant': okapi.tenant,
+        'X-Okapi-Token': okapi.token,
+        'Content-Type': 'application/json'
+      },
+      body: keys,
+    });
   }
 
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
@@ -401,6 +430,7 @@ export default class CollectionsView extends React.Component {
 }
 
 CollectionsView.propTypes = Object.freeze({
+  filterId: PropTypes.string,
   children: PropTypes.object,
   contentRef: PropTypes.object,
   contentData: PropTypes.arrayOf(PropTypes.object),
@@ -416,5 +446,11 @@ CollectionsView.propTypes = Object.freeze({
     totalCount: PropTypes.func
   }),
   onClose: PropTypes.func.isRequired,
+  stripes: PropTypes.shape({
+    okapi: PropTypes.shape({
+      tenant: PropTypes.string.isRequired,
+      token: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
   // visibleColumns: PropTypes.arrayOf(PropTypes.string)
 });

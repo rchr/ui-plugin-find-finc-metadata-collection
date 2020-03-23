@@ -8,8 +8,10 @@ import css from './CollectionSearch.css';
 
 class CollectionSearchModal extends Component {
   static propTypes = {
+    filterId: PropTypes.string,
     stripes: PropTypes.shape({
-      connect: PropTypes.func.isRequired
+      connect: PropTypes.func.isRequired,
+      okapi: PropTypes.object.isRequired,
     }).isRequired,
     modalRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
     selectCollection: PropTypes.func.isRequired,
@@ -77,6 +79,7 @@ class CollectionSearchModal extends Component {
       >
         <CollectionSearchContainer
           {...this.props}
+          filterId={this.props.filterId}
           onSelectRow={this.selectCollection}
           onClose={this.props.onClose}
         />
