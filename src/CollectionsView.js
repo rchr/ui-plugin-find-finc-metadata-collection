@@ -188,41 +188,10 @@ export default class CollectionsView extends React.Component {
 
   saveMultiple = () => {
     const { stripes: { okapi }, filterId } = this.props;
-    // const { stripes: { okapi } } = this.props;
-    // const checkedData = this.state.checkedMap;
-    // let value = {};
-    // value = Object.values(_.pickBy(this.state.checkedMap));
+
     let keys = [];
     keys = _.keys(this.state.checkedMap);
-    // console.log(checkedData);
-    // console.log('value');
-    // console.log(value);
-    // console.log('key');
-    // console.log(keys);
-    // if (checkedData) {
-    //   checkedData.map(result => {
-    //     console.log(result.id);
-    //     return result.id;
-    //   });
-    // }
-    // need array or object of ids?
-    // console.log(checkedData);
-    // console.log(checkedData[0].id);
 
-    // const checkedCollectionIds = _.get(this.state.checkedMap, 'id', {});
-    // console.log(checkedCollectionIds);
-    // keys.map(key => {
-    //   console.log(key);
-    //   return fetch(`${okapi.url}/finc-select/filters/${key}/collections`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'X-Okapi-Tenant': okapi.tenant,
-    //       'X-Okapi-Token': okapi.token,
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: keys,
-    //   });
-    // });
     return fetch(`${okapi.url}/finc-select/filters/${filterId}/collections`, {
       method: 'PUT',
       headers: {
@@ -230,8 +199,10 @@ export default class CollectionsView extends React.Component {
         'X-Okapi-Token': okapi.token,
         'Content-Type': 'application/json'
       },
-      body: keys,
-    });
+      body: JSON.stringify({
+        'collectionIds': keys
+      })
+    }).then(this.props.onClose);
   }
 
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
