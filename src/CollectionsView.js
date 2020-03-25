@@ -215,6 +215,10 @@ export default class CollectionsView extends React.Component {
     const sortOrder = query.sort || '';
     const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
 
+    console.log(this.props.isEditable);
+    console.log(this.props.filterId);
+    console.log(this.props.collectionIds);
+
     const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
 
     const footer = (
@@ -402,6 +406,8 @@ export default class CollectionsView extends React.Component {
 
 CollectionsView.propTypes = Object.freeze({
   filterId: PropTypes.string,
+  collectionIds: PropTypes.object,
+  isEditable: PropTypes.bool,
   children: PropTypes.object,
   contentRef: PropTypes.object,
   contentData: PropTypes.arrayOf(PropTypes.object),

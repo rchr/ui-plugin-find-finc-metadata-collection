@@ -50,6 +50,8 @@ class CollectionSearchContainer extends React.Component {
 
   static propTypes = {
     filterId: PropTypes.string,
+    collectionIds: PropTypes.object,
+    isEditable: PropTypes.bool,
     mutator: PropTypes.object,
     onSelectRow: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -109,6 +111,8 @@ class CollectionSearchContainer extends React.Component {
     return (
       <CollectionsView
         filterId={this.props.filterId}
+        collectionIds={this.props.collectionIds}
+        isEditable={this.props.isEditable}
         contentData={_.get(resources, 'metadataCollections.records', [])}
         onNeedMoreData={this.handleNeedMoreData}
         onSelectRow={onSelectRow}

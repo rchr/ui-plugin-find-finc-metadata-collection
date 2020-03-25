@@ -9,6 +9,8 @@ import css from './CollectionSearch.css';
 class CollectionSearchModal extends Component {
   static propTypes = {
     filterId: PropTypes.string,
+    collectionIds: PropTypes.arrayOf(PropTypes.object),
+    isEditable: PropTypes.bool,
     stripes: PropTypes.shape({
       connect: PropTypes.func.isRequired,
       okapi: PropTypes.object.isRequired,
@@ -80,6 +82,8 @@ class CollectionSearchModal extends Component {
         <CollectionSearchContainer
           {...this.props}
           filterId={this.props.filterId}
+          collectionIds={this.props.collectionIds}
+          isEditable={this.props.isEditable}
           onSelectRow={this.selectCollection}
           onClose={this.props.onClose}
         />
