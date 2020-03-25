@@ -242,6 +242,7 @@ export default class CollectionsView extends React.Component {
               <Button
                 buttonStyle="primary"
                 data-test-find-records-modal-save
+                disabled={!this.props.isEditable}
                 // disabled={!checkedRecordsLength}
                 marginBottom0
                 onClick={this.saveMultiple}
