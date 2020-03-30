@@ -1,9 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import {
-//   get,
-//   noop,
-// } from 'lodash';
 import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
@@ -42,7 +38,6 @@ const reduceCheckedRecords = (records, isChecked = false) => {
 export default class CollectionsView extends React.Component {
   static defaultProps = {
     filterData: {},
-    // visibleColumns: ['label', 'mdSource', 'permitted', 'filters', 'freeContent'],
   }
 
   constructor(props) {
@@ -53,23 +48,26 @@ export default class CollectionsView extends React.Component {
       checkedMap: {},
       isAllChecked: false,
     };
+    // checkedMap: { '6dd325f8-b1d5-4568-a0d7-aecf6b8d6123': {}, '9a2427cd-4110-4bd9-b6f9-e3475631bbac': {} },
   }
 
-  // columnMapping = {
-  //   isChecked: (
-  //     <Checkbox
-  //       checked={isAllChecked}
-  //       data-test-find-records-modal-select-all
-  //       onChange={this.toggleAll}
-  //       type="checkbox"
-  //     />
-  //   ),
-  //   label: 'Label',
-  //   mdSource: 'MdSource',
-  //   permitted: 'Permitted',
-  //   filters: 'Filters',
-  //   freeContent: 'FreeContent'
-  // };
+  componentDidMount() {
+    const arrayWithIds = this.props.collectionIds[0].collectionIds;
+    // ["9a2427cd-4110-4bd9-b6f9-e3475631bbac"]
+    // console.log('collectionIds');
+    // console.log(arrayWithIds);
+
+    const myObj = _.mapKeys(arrayWithIds);
+    this.setState(
+      {
+        checkedMap: myObj
+      }
+    );
+
+    // console.log('this.state.checkedMap');
+    // console.log(this.state.checkedMap);
+    // {6dd325f8-b1d5-4568-a0d7-aecf6b8d6123: {…}, 9a2427cd-4110-4bd9-b6f9-e3475631bbac: {…}}
+  }
 
   columnWidths = {
     isChecked: 40,
@@ -215,11 +213,10 @@ export default class CollectionsView extends React.Component {
     const sortOrder = query.sort || '';
     const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
 
-    console.log(this.props.isEditable);
-    console.log(this.props.filterId);
-    console.log(this.props.collectionIds);
-
     const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
+
+    // console.log('render this.state.checkedMap');
+    // console.log(this.state.checkedMap);
 
     const footer = (
       <PaneFooter footerClass={css.paneFooter}>
