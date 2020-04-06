@@ -52,17 +52,19 @@ export default class CollectionsView extends React.Component {
   }
 
   componentDidMount() {
-    const arrayWithIds = this.props.collectionIds[0].collectionIds;
-    // ["9a2427cd-4110-4bd9-b6f9-e3475631bbac"]
-    // console.log('collectionIds');
-    // console.log(arrayWithIds);
+    if (this.props.collectionIds) {
+      const arrayWithIds = this.props.collectionIds[0].collectionIds;
+      // ["9a2427cd-4110-4bd9-b6f9-e3475631bbac"]
+      // console.log('collectionIds');
+      // console.log(arrayWithIds);
 
-    const myObj = _.mapKeys(arrayWithIds);
-    this.setState(
-      {
-        checkedMap: myObj
-      }
-    );
+      const myObj = _.mapKeys(arrayWithIds);
+      this.setState(
+        {
+          checkedMap: myObj
+        }
+      );
+    }
 
     // console.log('this.state.checkedMap');
     // console.log(this.state.checkedMap);
@@ -257,7 +259,7 @@ export default class CollectionsView extends React.Component {
         <Checkbox
           checked={isAllChecked}
           data-test-find-records-modal-select-all
-          onChange={this.toggleAll}
+          onChange={this.props.isEditable ? this.toggleAll : undefined}
           type="checkbox"
         />
       ),
@@ -273,7 +275,7 @@ export default class CollectionsView extends React.Component {
         <Checkbox
           type="checkbox"
           checked={Boolean(checkedMap[record.id])}
-          onChange={() => this.toggleRecord(record)}
+          onChange={this.props.isEditable ? () => this.toggleRecord(record) : undefined}
         />
       ),
       label: col => col.label,
