@@ -380,7 +380,7 @@ export default class CollectionsView extends React.Component {
                       formatter={formatter}
                       id="list-collections"
                       isEmptyMessage="no results"
-                      onHeaderClick={onSort}
+                      onHeaderClick={this.props.isEditable ? onSort : undefined}
                       onNeedMoreData={onNeedMoreData}
                       // onRowClick={onSelectRow}
                       onRowClick={undefined}
