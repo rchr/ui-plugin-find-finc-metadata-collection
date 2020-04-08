@@ -238,16 +238,17 @@ export default class CollectionsView extends React.Component {
                   values={{ count: checkedRecordsLength }}
                 />
               </div>
+              {/* {this.props.isEditable ? */}
               <Button
                 buttonStyle="primary"
                 data-test-find-records-modal-save
-                disabled={!this.props.isEditable}
-                // disabled={!checkedRecordsLength}
+                disabled={!this.props.isEditable || !checkedRecordsLength}
                 marginBottom0
                 onClick={this.saveMultiple}
               >
                 <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.save" />
               </Button>
+              {/* : ''} */}
             </React.Fragment>
           )}
         </div>
@@ -406,7 +407,7 @@ export default class CollectionsView extends React.Component {
 
 CollectionsView.propTypes = Object.freeze({
   filterId: PropTypes.string,
-  collectionIds: PropTypes.object,
+  collectionIds: PropTypes.arrayOf(PropTypes.object),
   isEditable: PropTypes.bool,
   children: PropTypes.object,
   contentRef: PropTypes.object,

@@ -50,7 +50,7 @@ class CollectionSearchContainer extends React.Component {
 
   static propTypes = {
     filterId: PropTypes.string,
-    collectionIds: PropTypes.object,
+    collectionIds: PropTypes.arrayOf(PropTypes.object),
     isEditable: PropTypes.bool,
     mutator: PropTypes.object,
     onSelectRow: PropTypes.func.isRequired,
