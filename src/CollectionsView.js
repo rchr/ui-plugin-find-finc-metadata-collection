@@ -38,6 +38,7 @@ const reduceCheckedRecords = (records, isChecked = false) => {
 export default class CollectionsView extends React.Component {
   static defaultProps = {
     filterData: {},
+    onSaveMultiple: _.noop,
   }
 
   constructor(props) {
@@ -186,24 +187,33 @@ export default class CollectionsView extends React.Component {
     });
   }
 
+  // saveMultiple = () => {
+  //   const { stripes: { okapi }, filterId } = this.props;
+
+  //   let keys = [];
+  //   keys = _.keys(this.state.checkedMap);
+
+  //   return fetch(`${okapi.url}/finc-select/filters/${filterId}/collections`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'X-Okapi-Tenant': okapi.tenant,
+  //       'X-Okapi-Token': okapi.token,
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       'collectionIds': keys
+  //     })
+  //   }).then(this.props.onClose);
+  // }
+
   saveMultiple = () => {
-    const { stripes: { okapi }, filterId } = this.props;
+    const selectedRecords = _.keys(this.state.checkedMap);
 
-    let keys = [];
-    keys = _.keys(this.state.checkedMap);
+    // console.log('collection view');
+    // console.log(selectedRecords);
 
-    return fetch(`${okapi.url}/finc-select/filters/${filterId}/collections`, {
-      method: 'PUT',
-      headers: {
-        'X-Okapi-Tenant': okapi.tenant,
-        'X-Okapi-Token': okapi.token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'collectionIds': keys
-      })
-    }).then(this.props.onClose);
-  }
+    this.props.onSaveMultiple(selectedRecords);
+  };
 
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
 
@@ -242,7 +252,8 @@ export default class CollectionsView extends React.Component {
               <Button
                 buttonStyle="primary"
                 data-test-find-records-modal-save
-                disabled={!this.props.isEditable || !checkedRecordsLength}
+                disabled={!this.props.isEditable}
+                // disabled={!this.props.isEditable || !checkedRecordsLength}
                 marginBottom0
                 onClick={this.saveMultiple}
               >
@@ -406,7 +417,8 @@ export default class CollectionsView extends React.Component {
 }
 
 CollectionsView.propTypes = Object.freeze({
-  filterId: PropTypes.string,
+  // filterId: PropTypes.string,
+  onSaveMultiple: PropTypes.func,
   collectionIds: PropTypes.arrayOf(PropTypes.object),
   isEditable: PropTypes.bool,
   children: PropTypes.object,

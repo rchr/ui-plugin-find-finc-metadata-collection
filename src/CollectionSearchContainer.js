@@ -60,6 +60,11 @@ class CollectionSearchContainer extends React.Component {
       logger: PropTypes.object,
       okapi: PropTypes.object,
     }),
+    selectRecordsContainer: PropTypes.func,
+  }
+
+  static defaultProps = {
+    selectRecordsContainer: _.noop,
   }
 
   constructor(props) {
@@ -101,6 +106,28 @@ class CollectionSearchContainer extends React.Component {
     this.props.mutator.query.update({ qindex });
   }
 
+  // vgl. PluginFindRecord
+  // test = () => {
+  //   const { children } = this.props;
+  //   return (
+  //     <div>
+  //       {children({
+  //         onSaveMultiple: this.passRecordsOut,
+  //         // onSelectRow: this.passRecordOut,
+  //         // closeModal: this.closeModal,
+  //         // modalRef: this.modalRef,
+  //       })}
+  //     </div>
+  //   );
+  // }
+
+  passRecordsOut = records => {
+    this.props.selectRecordsContainer(records);
+
+    // console.log('container');
+    // console.log(records);
+  }
+
   render() {
     const { onSelectRow, resources } = this.props;
 
@@ -125,6 +152,7 @@ class CollectionSearchContainer extends React.Component {
         }}
         onClose={this.props.onClose}
         stripes={this.props.stripes}
+        onSaveMultiple={this.passRecordsOut}
       />
     );
   }

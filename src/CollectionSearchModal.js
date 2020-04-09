@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -19,8 +20,13 @@ class CollectionSearchModal extends Component {
     selectCollection: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
-    dataKey: PropTypes.string
+    dataKey: PropTypes.string,
+    selectRecordsModal: PropTypes.func,
   };
+
+  static defaultProps = {
+    selectRecordsModal: _.noop,
+  }
 
   constructor(props) {
     super(props);
@@ -32,6 +38,13 @@ class CollectionSearchModal extends Component {
     this.props.selectCollection(collection);
     this.props.onClose();
   };
+
+  passRecordsOut = records => {
+    this.props.selectRecordsModal(records);
+
+    // console.log('modal');
+    // console.log(records);
+  }
 
   render() {
     // const footer = (
@@ -86,6 +99,7 @@ class CollectionSearchModal extends Component {
           isEditable={this.props.isEditable}
           onSelectRow={this.selectCollection}
           onClose={this.props.onClose}
+          selectRecordsContainer={this.passRecordsOut}
         />
       </Modal>
     );
