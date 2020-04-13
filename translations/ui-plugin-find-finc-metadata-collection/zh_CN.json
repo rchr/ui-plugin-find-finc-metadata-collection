@@ -1,5 +1,5 @@
 {
-    "meta.title": "plugin-find-finc-metadata-collection",
-    "modal.label": "Select metadata collection",
-    "searchButton.title": "Find metadata collection"
+    "meta.title": "插件查找finc元数据集合",
+    "modal.label": "选择元数据集合",
+    "searchButton.title": "查找元数据集合"
 }
