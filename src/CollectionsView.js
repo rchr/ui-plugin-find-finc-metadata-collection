@@ -213,6 +213,7 @@ export default class CollectionsView extends React.Component {
     // console.log(selectedRecords);
 
     this.props.onSaveMultiple(selectedRecords);
+    this.props.onClose();
   };
 
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);

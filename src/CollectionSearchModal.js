@@ -34,11 +34,6 @@ class CollectionSearchModal extends Component {
     this.modalRef = props.modalRef || React.createRef();
   }
 
-  selectCollection = (e, collection) => {
-    this.props.selectCollection(collection);
-    this.props.onClose();
-  };
-
   passRecordsOut = records => {
     this.props.selectRecordsModal(records);
 
@@ -97,7 +92,7 @@ class CollectionSearchModal extends Component {
           filterId={this.props.filterId}
           collectionIds={this.props.collectionIds}
           isEditable={this.props.isEditable}
-          onSelectRow={this.selectCollection}
+          // onSelectRow={this.selectCollection}
           onClose={this.props.onClose}
           selectRecordsContainer={this.passRecordsOut}
         />
