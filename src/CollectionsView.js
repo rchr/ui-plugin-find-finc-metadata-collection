@@ -54,12 +54,9 @@ export default class CollectionsView extends React.Component {
   }
 
   componentDidMount() {
-    // TODO: initial value is not correct
-    if (this.props.collectionIds) {
+    if (this.props.collectionIds.length > 0) {
       const arrayWithIds = this.props.collectionIds[0].collectionIds;
       // ["9a2427cd-4110-4bd9-b6f9-e3475631bbac"]
-      // console.log('collectionIds');
-      // console.log(arrayWithIds);
 
       const myObj = _.mapKeys(arrayWithIds);
       this.setState(
@@ -68,9 +65,6 @@ export default class CollectionsView extends React.Component {
         }
       );
     }
-
-    // console.log('this.state.checkedMap');
-    // console.log(this.state.checkedMap);
     // {6dd325f8-b1d5-4568-a0d7-aecf6b8d6123: {…}, 9a2427cd-4110-4bd9-b6f9-e3475631bbac: {…}}
   }
 
@@ -211,9 +205,6 @@ export default class CollectionsView extends React.Component {
   saveMultiple = () => {
     const selectedRecords = _.keys(this.state.checkedMap);
 
-    // console.log('collection view');
-    // console.log(selectedRecords);
-
     this.props.onSaveMultiple(selectedRecords);
     this.props.onClose();
   };
@@ -229,9 +220,6 @@ export default class CollectionsView extends React.Component {
     const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
 
     const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
-
-    // console.log('render this.state.checkedMap');
-    // console.log(this.state.checkedMap);
 
     const footer = (
       <PaneFooter footerClass={css.paneFooter}>

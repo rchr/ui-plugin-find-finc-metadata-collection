@@ -17,7 +17,7 @@ class CollectionSearchModal extends Component {
       okapi: PropTypes.object.isRequired,
     }).isRequired,
     modalRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-    selectCollection: PropTypes.func.isRequired,
+    selectCollection: PropTypes.func,
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
     dataKey: PropTypes.string,
@@ -36,43 +36,9 @@ class CollectionSearchModal extends Component {
 
   passRecordsOut = records => {
     this.props.selectRecordsModal(records);
-
-    // console.log('modal');
-    // console.log(records);
   }
 
   render() {
-    // const footer = (
-    //   <div className={css.pluginModalFooter}>
-    //     <Button
-    //       marginBottom0
-    //       onClick={this.props.onClose}
-    //       className="left"
-    //     >
-    //       <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.close" />
-    //     </Button>
-    //     {(
-    //       <React.Fragment>
-    //         <div>
-    //           <FormattedMessage
-    //             id="ui-plugin-find-finc-metadata-collection.modal.totalSelected"
-    //             // values={{ count: checkedRecordsLength }}
-    //           />
-    //         </div>
-    //         <Button
-    //           buttonStyle="primary"
-    //           data-test-find-records-modal-save
-    //           // disabled={!checkedRecordsLength}
-    //           marginBottom0
-    //           onClick={this.saveMultiple}
-    //         >
-    //           <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.save" />
-    //         </Button>
-    //       </React.Fragment>
-    //     )}
-    //   </div>
-    // );
-
     return (
       <Modal
         contentClass={css.modalContent}
