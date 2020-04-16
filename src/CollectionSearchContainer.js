@@ -53,7 +53,7 @@ class CollectionSearchContainer extends React.Component {
     collectionIds: PropTypes.arrayOf(PropTypes.object),
     isEditable: PropTypes.bool,
     mutator: PropTypes.object,
-    onSelectRow: PropTypes.func.isRequired,
+    onSelectRow: PropTypes.func,
     onClose: PropTypes.func.isRequired,
     resources: PropTypes.object,
     stripes: PropTypes.shape({

@@ -39,6 +39,7 @@ export default class CollectionsView extends React.Component {
   static defaultProps = {
     filterData: {},
     onSaveMultiple: _.noop,
+    collectionIds: [],
   }
 
   constructor(props) {
@@ -53,6 +54,7 @@ export default class CollectionsView extends React.Component {
   }
 
   componentDidMount() {
+    // TODO: initial value is not correct
     if (this.props.collectionIds) {
       const arrayWithIds = this.props.collectionIds[0].collectionIds;
       // ["9a2427cd-4110-4bd9-b6f9-e3475631bbac"]
