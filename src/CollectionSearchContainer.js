@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { get } from 'lodash';
 import { stripesConnect } from '@folio/stripes/core';
 import {
   makeQueryFunction,
@@ -106,26 +105,8 @@ class CollectionSearchContainer extends React.Component {
     this.props.mutator.query.update({ qindex });
   }
 
-  // vgl. PluginFindRecord
-  // test = () => {
-  //   const { children } = this.props;
-  //   return (
-  //     <div>
-  //       {children({
-  //         onSaveMultiple: this.passRecordsOut,
-  //         // onSelectRow: this.passRecordOut,
-  //         // closeModal: this.closeModal,
-  //         // modalRef: this.modalRef,
-  //       })}
-  //     </div>
-  //   );
-  // }
-
   passRecordsOut = records => {
     this.props.selectRecordsContainer(records);
-
-    // console.log('container');
-    // console.log(records);
   }
 
   render() {

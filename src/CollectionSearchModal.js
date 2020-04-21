@@ -43,7 +43,6 @@ class CollectionSearchModal extends Component {
       <Modal
         contentClass={css.modalContent}
         enforceFocus={false}
-        // footer={footer}
         onClose={this.props.onClose}
         size="large"
         open={this.props.open}
@@ -58,7 +57,6 @@ class CollectionSearchModal extends Component {
           filterId={this.props.filterId}
           collectionIds={this.props.collectionIds}
           isEditable={this.props.isEditable}
-          // onSelectRow={this.selectCollection}
           onClose={this.props.onClose}
           selectRecordsContainer={this.passRecordsOut}
         />

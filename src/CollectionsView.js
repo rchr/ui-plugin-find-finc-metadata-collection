@@ -1,6 +1,6 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
   Button,
@@ -21,7 +21,6 @@ import {
 
 import CollectionFilters from './CollectionFilters';
 import css from './CollectionSearch.css';
-
 
 const reduceCheckedRecords = (records, isChecked = false) => {
   const recordsReducer = (accumulator, record) => {
@@ -50,7 +49,6 @@ export default class CollectionsView extends React.Component {
       checkedMap: {},
       isAllChecked: false,
     };
-    // checkedMap: { '6dd325f8-b1d5-4568-a0d7-aecf6b8d6123': {}, '9a2427cd-4110-4bd9-b6f9-e3475631bbac': {} },
   }
 
   componentDidMount() {
@@ -183,25 +181,6 @@ export default class CollectionsView extends React.Component {
     });
   }
 
-  // saveMultiple = () => {
-  //   const { stripes: { okapi }, filterId } = this.props;
-
-  //   let keys = [];
-  //   keys = _.keys(this.state.checkedMap);
-
-  //   return fetch(`${okapi.url}/finc-select/filters/${filterId}/collections`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'X-Okapi-Tenant': okapi.tenant,
-  //       'X-Okapi-Token': okapi.token,
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       'collectionIds': keys
-  //     })
-  //   }).then(this.props.onClose);
-  // }
-
   saveMultiple = () => {
     const selectedRecords = _.keys(this.state.checkedMap);
 
@@ -239,18 +218,15 @@ export default class CollectionsView extends React.Component {
                   values={{ count: checkedRecordsLength }}
                 />
               </div>
-              {/* {this.props.isEditable ? */}
               <Button
                 buttonStyle="primary"
                 data-test-find-records-modal-save
                 disabled={!this.props.isEditable}
-                // disabled={!this.props.isEditable || !checkedRecordsLength}
                 marginBottom0
                 onClick={this.saveMultiple}
               >
                 <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.save" />
               </Button>
-              {/* : ''} */}
             </React.Fragment>
           )}
         </div>
@@ -282,7 +258,6 @@ export default class CollectionsView extends React.Component {
         />
       ),
       label: col => col.label,
-      // mdSource: collection => collection.mdSource.name,
       mdSource: col => _.get(col, 'mdSource.name', '-'),
       permitted: col => col.permitted,
       selected: col => col.selected,
@@ -293,8 +268,6 @@ export default class CollectionsView extends React.Component {
     return (
       <div data-test-collections ref={contentRef}>
         <SearchAndSortQuery
-          // intial filter not working ?!
-          // initialFilterState={{ permitted: ['yes'], selected: ['yes'] }}
           initialFilterState={{}}
           initialSearchState={{ query: '' }}
           initialSortState={{ sort: 'label' }}
@@ -375,17 +348,14 @@ export default class CollectionsView extends React.Component {
                   >
                     <MultiColumnList
                       autosize
-                      // columnMapping={this.columnMapping}
                       columnMapping={columnMapping}
                       columnWidths={this.columnWidths}
                       contentData={contentData}
-                      // formatter={this.formatter}
                       formatter={formatter}
                       id="list-collections"
                       isEmptyMessage="no results"
                       onHeaderClick={this.props.isEditable ? onSort : undefined}
                       onNeedMoreData={onNeedMoreData}
-                      // onRowClick={onSelectRow}
                       onRowClick={undefined}
                       sortDirection={
                         sortOrder.startsWith('-') ? 'descending' : 'ascending'
@@ -408,7 +378,6 @@ export default class CollectionsView extends React.Component {
 }
 
 CollectionsView.propTypes = Object.freeze({
-  // filterId: PropTypes.string,
   onSaveMultiple: PropTypes.func,
   collectionIds: PropTypes.arrayOf(PropTypes.object),
   isEditable: PropTypes.bool,
@@ -419,7 +388,6 @@ CollectionsView.propTypes = Object.freeze({
     mdSources: PropTypes.array,
   }),
   onNeedMoreData: PropTypes.func,
-  // onSelectRow: PropTypes.func,
   queryGetter: PropTypes.func.isRequired,
   querySetter: PropTypes.func.isRequired,
   collection: PropTypes.shape({
@@ -427,11 +395,4 @@ CollectionsView.propTypes = Object.freeze({
     totalCount: PropTypes.func
   }),
   onClose: PropTypes.func.isRequired,
-  stripes: PropTypes.shape({
-    okapi: PropTypes.shape({
-      tenant: PropTypes.string.isRequired,
-      token: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  // visibleColumns: PropTypes.arrayOf(PropTypes.string)
 });

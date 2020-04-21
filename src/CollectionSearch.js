@@ -52,9 +52,6 @@ class CollectionSearch extends Component {
 
   passRecordsOut = records => {
     this.props.selectRecords(records);
-
-    // console.log('col search');
-    // console.log(records);
   }
 
   render() {
@@ -85,7 +82,6 @@ class CollectionSearch extends Component {
               </Button>
             )}
           </FormattedMessage>}
-        {/* {addCollections => ( */}
         <CollectionSearchModal
           filterId={this.props.filterId}
           collectionIds={this.props.collectionIds}
@@ -94,10 +90,8 @@ class CollectionSearch extends Component {
           open={this.state.openModal}
           onClose={this.closeModal}
           selectRecordsModal={this.passRecordsOut}
-          // selectRecordsModal={addCollections}
           {...this.props}
         />
-        {/* )} */}
       </React.Fragment>
     );
   }
