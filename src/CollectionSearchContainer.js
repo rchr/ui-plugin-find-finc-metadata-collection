@@ -17,10 +17,10 @@ class CollectionSearchContainer extends React.Component {
   static manifest = Object.freeze({
     metadataCollections: {
       type: 'okapi',
-      records: 'fincConfigMetadataCollections',
+      records: 'fincSelectMetadataCollections',
       recordsRequired: '%{resultCount}',
       perRequest: 100,
-      path: 'finc-config/metadata-collections',
+      path: 'finc-select/metadata-collections',
       resourceShouldRefresh: true,
       GET: {
         params: {
