@@ -1,5 +1,8 @@
 {
     "meta.title": "plugin-find-finc-metadata-collection",
     "modal.label": "Выбрать коллекцию метаданных",
-    "searchButton.title": "Найти коллекцию метаданных"
+    "searchButton.title": "Найти коллекцию метаданных",
+    "button.close": "Close",
+    "modal.totalSelected": "Total selected: {count}",
+    "button.save": "Save"
 }
