@@ -1,14 +1,14 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
 import { stripesConnect } from '@folio/stripes/core';
 import {
   makeQueryFunction,
   StripesConnectedSource,
 } from '@folio/stripes/smart-components';
 
-// import CollectionsView from './CollectionsView';
-// import filterConfig from './filterConfigData';
+import CollectionsView from './CollectionsView';
+import filterConfig from './filterConfigData';
 
 const INITIAL_RESULT_COUNT = 100;
 const RESULT_COUNT_INCREMENT = 100;
@@ -17,10 +17,10 @@ class CollectionSearchContainer extends React.Component {
   static manifest = Object.freeze({
     metadataCollections: {
       type: 'okapi',
-      records: 'fincConfigMetadataCollections',
+      records: 'fincSelectMetadataCollections',
       recordsRequired: '%{resultCount}',
       perRequest: 100,
-      path: 'finc-config/metadata-collections',
+      path: 'finc-select/metadata-collections',
       resourceShouldRefresh: true,
       GET: {
         params: {
@@ -30,24 +30,40 @@ class CollectionSearchContainer extends React.Component {
             {
               'Collection Name': 'label'
             },
-            // filterConfig,
+            filterConfig,
             2,
           ),
         },
         staticFallback: { params: {} },
       },
     },
+    mdSources: {
+      type: 'okapi',
+      records: 'tinyMetadataSources',
+      path: 'finc-config/tiny-metadata-sources',
+      resourceShouldRefresh: true
+    },
     query: { initialValue: {} },
     resultCount: { initialValue: INITIAL_RESULT_COUNT },
   });
 
   static propTypes = {
+    filterId: PropTypes.string,
+    collectionIds: PropTypes.arrayOf(PropTypes.object),
+    isEditable: PropTypes.bool,
     mutator: PropTypes.object,
-    onSelectRow: PropTypes.func.isRequired,
+    onSelectRow: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
     resources: PropTypes.object,
     stripes: PropTypes.shape({
       logger: PropTypes.object,
+      okapi: PropTypes.object,
     }),
+    selectRecordsContainer: PropTypes.func,
+  }
+
+  static defaultProps = {
+    selectRecordsContainer: _.noop,
   }
 
   constructor(props) {
@@ -74,7 +90,7 @@ class CollectionSearchContainer extends React.Component {
   }
 
   queryGetter = () => {
-    return get(this.props.resources, 'query', {});
+    return _.get(this.props.resources, 'query', {});
   }
 
   handleNeedMoreData = () => {
@@ -89,6 +105,10 @@ class CollectionSearchContainer extends React.Component {
     this.props.mutator.query.update({ qindex });
   }
 
+  passRecordsOut = records => {
+    this.props.selectRecordsContainer(records);
+  }
+
   render() {
     const { onSelectRow, resources } = this.props;
 
@@ -96,19 +116,25 @@ class CollectionSearchContainer extends React.Component {
       this.collection.update(this.props, 'metadataCollections');
     }
 
-    const collections = get(resources, 'metadataCollections.records', []);
-
     return (
-      { collections }
-      // <CollectionsView
-      //   data={collections}
-      //   onNeedMoreData={this.handleNeedMoreData}
-      //   onSelectRow={onSelectRow}
-      //   queryGetter={this.queryGetter}
-      //   querySetter={this.querySetter}
-      //   collection={this.collection}
-      //   onChangeIndex={this.onChangeIndex}
-      // />
+      <CollectionsView
+        filterId={this.props.filterId}
+        collectionIds={this.props.collectionIds}
+        isEditable={this.props.isEditable}
+        contentData={_.get(resources, 'metadataCollections.records', [])}
+        onNeedMoreData={this.handleNeedMoreData}
+        onSelectRow={onSelectRow}
+        queryGetter={this.queryGetter}
+        querySetter={this.querySetter}
+        collection={this.collection}
+        onChangeIndex={this.onChangeIndex}
+        filterData={{
+          mdSources: _.get(this.props.resources, 'mdSources.records', []),
+        }}
+        onClose={this.props.onClose}
+        stripes={this.props.stripes}
+        onSaveMultiple={this.passRecordsOut}
+      />
     );
   }
 }

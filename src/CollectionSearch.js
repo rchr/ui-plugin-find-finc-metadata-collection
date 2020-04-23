@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -49,6 +50,10 @@ class CollectionSearch extends Component {
     });
   }
 
+  passRecordsOut = records => {
+    this.props.selectRecords(records);
+  }
+
   render() {
     const {
       buttonId,
@@ -78,9 +83,13 @@ class CollectionSearch extends Component {
             )}
           </FormattedMessage>}
         <CollectionSearchModal
+          filterId={this.props.filterId}
+          collectionIds={this.props.collectionIds}
+          isEditable={this.props.isEditable}
           modalRef={this.modalRef}
           open={this.state.openModal}
           onClose={this.closeModal}
+          selectRecordsModal={this.passRecordsOut}
           {...this.props}
         />
       </React.Fragment>
@@ -91,15 +100,22 @@ class CollectionSearch extends Component {
 CollectionSearch.defaultProps = {
   buttonId: 'clickable-plugin-find-finc-metadata-collection',
   searchButtonStyle: 'primary noRightRadius',
+  selectRecords: _.noop,
+  addCollections: _.noop,
 };
 
 CollectionSearch.propTypes = {
   buttonId: PropTypes.string,
+  filterId: PropTypes.string,
+  collectionIds: PropTypes.arrayOf(PropTypes.object),
+  isEditable: PropTypes.bool,
   renderTrigger: PropTypes.func,
   searchLabel: PropTypes.node,
   searchButtonStyle: PropTypes.string,
   marginBottom0: PropTypes.bool,
   marginTop0: PropTypes.bool,
+  selectRecords: PropTypes.func,
+  addCollections: PropTypes.func,
 };
 
 export default CollectionSearch;

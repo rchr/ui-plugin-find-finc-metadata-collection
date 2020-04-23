@@ -1,15 +1,14 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  get,
-  noop,
-} from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
   Button,
+  Checkbox,
   Icon,
   MultiColumnList,
   Pane,
+  PaneFooter,
   PaneMenu,
   Paneset,
   SearchField,
@@ -23,15 +22,23 @@ import {
 import CollectionFilters from './CollectionFilters';
 import css from './CollectionSearch.css';
 
+const reduceCheckedRecords = (records, isChecked = false) => {
+  const recordsReducer = (accumulator, record) => {
+    if (isChecked) {
+      accumulator[record.id] = record;
+    }
+
+    return accumulator;
+  };
+
+  return records.reduce(recordsReducer, {});
+};
 
 export default class CollectionsView extends React.Component {
-  static propTypes = {
-    onChangeIndex: PropTypes.func,
-  }
-
   static defaultProps = {
-    data: {},
-    visibleColumns: ['label', 'sourceId', 'status', 'solrShard', 'lastProcessed'],
+    filterData: {},
+    onSaveMultiple: _.noop,
+    collectionIds: [],
   }
 
   constructor(props) {
@@ -39,23 +46,33 @@ export default class CollectionsView extends React.Component {
 
     this.state = {
       filterPaneIsVisible: true,
+      checkedMap: {},
+      isAllChecked: false,
     };
   }
 
-  columnMapping = {
-    label: 'Label',
-    sourceId: 'SourceId',
-    status: 'Status',
-    solrShard: 'SolrShard',
-    lastProcessed: 'LastProcessed'
-  };
+  componentDidMount() {
+    if (this.props.collectionIds.length > 0) {
+      const arrayWithIds = this.props.collectionIds[0].collectionIds;
+      // ["9a2427cd-4110-4bd9-b6f9-e3475631bbac"]
+
+      const myObj = _.mapKeys(arrayWithIds);
+      this.setState(
+        {
+          checkedMap: myObj
+        }
+      );
+    }
+    // {6dd325f8-b1d5-4568-a0d7-aecf6b8d6123: {…}, 9a2427cd-4110-4bd9-b6f9-e3475631bbac: {…}}
+  }
 
   columnWidths = {
-    label: 300,
-    sourceId: 100,
-    status: 150,
-    solrShard: 100,
-    lastProcessed: 150
+    isChecked: 40,
+    label: 230,
+    mdSource: 230,
+    permitted: 100,
+    filters: 100,
+    freeContent: 100
   };
 
   getArrayElementsCommaSeparated = (array) => {
@@ -68,16 +85,6 @@ export default class CollectionsView extends React.Component {
     }
     return formatted;
   }
-
-  formatter = {
-    label: collection => collection.label,
-    // mdSource: collection => collection.mdSource.name,
-    mdSource: collection => _.get(collection, 'mdSource.name', '-'),
-    permitted: collection => collection.permitted,
-    selected: collection => collection.selected,
-    filters: collection => this.getArrayElementsCommaSeparated(collection.filters),
-    freeContent: collection => collection.freeContent,
-  };
 
   // fade in/out of filter-pane
   toggleFilterPane = () => {
@@ -97,7 +104,7 @@ export default class CollectionsView extends React.Component {
           collection={collection}
           searchTerm={query.query || ''}
           filterPaneIsVisible
-          toggleFilterPane={noop}
+          toggleFilterPane={_.noop}
         />
       </div>
     );
@@ -139,16 +146,129 @@ export default class CollectionsView extends React.Component {
     return <FormattedMessage id="stripes-smart-components.searchCriteria" />;
   }
 
+  toggleAll = () => {
+    this.setState((state, props) => {
+      const isAllChecked = !state.isAllChecked;
+      const { contentData } = props;
+      const checkedMap = reduceCheckedRecords(contentData, isAllChecked);
+
+      return {
+        checkedMap,
+        isAllChecked,
+      };
+    });
+  }
+
+  toggleRecord = toggledRecord => {
+    const { id } = toggledRecord;
+
+    this.setState((state, props) => {
+      const { contentData } = props;
+      const wasChecked = Boolean(state.checkedMap[id]);
+      const checkedMap = { ...state.checkedMap };
+
+      if (wasChecked) {
+        delete checkedMap[id];
+      } else {
+        checkedMap[id] = toggledRecord;
+      }
+      const isAllChecked = contentData.every(record => Boolean(checkedMap[record.id]));
+
+      return {
+        checkedMap,
+        isAllChecked,
+      };
+    });
+  }
+
+  saveMultiple = () => {
+    const selectedRecords = _.keys(this.state.checkedMap);
+
+    this.props.onSaveMultiple(selectedRecords);
+    this.props.onClose();
+  };
+
+  isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
+
   render() {
-    const { children, contentRef, data, onChangeIndex, onNeedMoreData, onSelectRow, queryGetter, querySetter, collection, visibleColumns } = this.props;
+    const { filterData, children, contentRef, contentData, onNeedMoreData, queryGetter, querySetter, collection } = this.props;
+    const { checkedMap, isAllChecked } = this.state;
     const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
+    const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
+
+    const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
+
+    const footer = (
+      <PaneFooter footerClass={css.paneFooter}>
+        <div className={css.pluginModalFooter}>
+          <Button
+            marginBottom0
+            onClick={this.props.onClose}
+            className="left"
+          >
+            <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.close" />
+          </Button>
+          {(
+            <React.Fragment>
+              <div>
+                <FormattedMessage
+                  id="ui-plugin-find-finc-metadata-collection.modal.totalSelected"
+                  values={{ count: checkedRecordsLength }}
+                />
+              </div>
+              <Button
+                buttonStyle="primary"
+                data-test-find-records-modal-save
+                disabled={!this.props.isEditable}
+                marginBottom0
+                onClick={this.saveMultiple}
+              >
+                <FormattedMessage id="ui-plugin-find-finc-metadata-collection.button.save" />
+              </Button>
+            </React.Fragment>
+          )}
+        </div>
+      </PaneFooter>
+    );
+
+    const columnMapping = {
+      isChecked: (
+        <Checkbox
+          checked={isAllChecked}
+          data-test-find-records-modal-select-all
+          onChange={this.props.isEditable ? this.toggleAll : undefined}
+          type="checkbox"
+        />
+      ),
+      label: 'Label',
+      mdSource: 'MdSource',
+      permitted: 'Permitted',
+      filters: 'Filters',
+      freeContent: 'FreeContent'
+    };
+
+    const formatter = {
+      isChecked: record => (
+        <Checkbox
+          type="checkbox"
+          checked={Boolean(checkedMap[record.id])}
+          onChange={this.props.isEditable ? () => this.toggleRecord(record) : undefined}
+        />
+      ),
+      label: col => col.label,
+      mdSource: col => _.get(col, 'mdSource.name', '-'),
+      permitted: col => col.permitted,
+      selected: col => col.selected,
+      filters: col => this.getArrayElementsCommaSeparated(col.filters),
+      freeContent: col => col.freeContent,
+    };
 
     return (
       <div data-test-collections ref={contentRef}>
         <SearchAndSortQuery
-          initialFilterState={{ permitted: ['yes'], selected: ['yes'] }}
+          initialFilterState={{}}
           initialSearchState={{ query: '' }}
           initialSortState={{ sort: 'label' }}
           queryGetter={queryGetter}
@@ -212,7 +332,7 @@ export default class CollectionsView extends React.Component {
                         </Button>
                         <CollectionFilters
                           activeFilters={activeFilters.state}
-                          data={data}
+                          filterData={filterData}
                           filterHandlers={getFilterHandlers()}
                         />
                       </form>
@@ -224,18 +344,19 @@ export default class CollectionsView extends React.Component {
                     padContent={false}
                     paneTitle="Metadata Collections"
                     paneSub={this.renderResultsPaneSubtitle(collection)}
+                    footer={footer}
                   >
                     <MultiColumnList
                       autosize
-                      columnMapping={this.columnMapping}
+                      columnMapping={columnMapping}
                       columnWidths={this.columnWidths}
-                      contentData={data}
-                      formatter={this.formatter}
+                      contentData={contentData}
+                      formatter={formatter}
                       id="list-collections"
                       isEmptyMessage="no results"
-                      onHeaderClick={onSort}
+                      onHeaderClick={this.props.isEditable ? onSort : undefined}
                       onNeedMoreData={onNeedMoreData}
-                      onRowClick={onSelectRow}
+                      onRowClick={undefined}
                       sortDirection={
                         sortOrder.startsWith('-') ? 'descending' : 'ascending'
                       }
@@ -257,17 +378,21 @@ export default class CollectionsView extends React.Component {
 }
 
 CollectionsView.propTypes = Object.freeze({
+  onSaveMultiple: PropTypes.func,
+  collectionIds: PropTypes.arrayOf(PropTypes.object),
+  isEditable: PropTypes.bool,
   children: PropTypes.object,
   contentRef: PropTypes.object,
-  data: PropTypes.arrayOf(PropTypes.object),
+  contentData: PropTypes.arrayOf(PropTypes.object),
+  filterData: PropTypes.shape({
+    mdSources: PropTypes.array,
+  }),
   onNeedMoreData: PropTypes.func,
-  onChangeIndex: PropTypes.func,
-  onSelectRow: PropTypes.func,
   queryGetter: PropTypes.func.isRequired,
   querySetter: PropTypes.func.isRequired,
   collection: PropTypes.shape({
     loaded: PropTypes.func,
     totalCount: PropTypes.func
   }),
-  visibleColumns: PropTypes.arrayOf(PropTypes.string)
+  onClose: PropTypes.func.isRequired,
 });

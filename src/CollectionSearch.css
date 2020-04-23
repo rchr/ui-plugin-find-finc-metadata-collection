@@ -3,7 +3,7 @@
 .modalContent {
   padding: 0;
   position: relative;
-  min-height: 500px;
+  min-height: 600px;
 }
 
 .searchGroupWrap {
@@ -24,4 +24,10 @@
     border-color: rgba(0, 0, 0, 0.62);
     color: rgba(0, 0, 0, 0.62);
   }
+}
+
+.pluginModalFooter {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }

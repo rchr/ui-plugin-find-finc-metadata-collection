@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -8,15 +9,24 @@ import css from './CollectionSearch.css';
 
 class CollectionSearchModal extends Component {
   static propTypes = {
+    filterId: PropTypes.string,
+    collectionIds: PropTypes.arrayOf(PropTypes.object),
+    isEditable: PropTypes.bool,
     stripes: PropTypes.shape({
-      connect: PropTypes.func.isRequired
+      connect: PropTypes.func.isRequired,
+      okapi: PropTypes.object.isRequired,
     }).isRequired,
     modalRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-    selectCollection: PropTypes.func.isRequired,
+    selectCollection: PropTypes.func,
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
-    dataKey: PropTypes.string
+    dataKey: PropTypes.string,
+    selectRecordsModal: PropTypes.func,
   };
+
+  static defaultProps = {
+    selectRecordsModal: _.noop,
+  }
 
   constructor(props) {
     super(props);
@@ -24,10 +34,9 @@ class CollectionSearchModal extends Component {
     this.modalRef = props.modalRef || React.createRef();
   }
 
-  selectCollection = (e, collection) => {
-    this.props.selectCollection(collection);
-    this.props.onClose();
-  };
+  passRecordsOut = records => {
+    this.props.selectRecordsModal(records);
+  }
 
   render() {
     return (
@@ -45,7 +54,11 @@ class CollectionSearchModal extends Component {
       >
         <CollectionSearchContainer
           {...this.props}
-          onSelectRow={this.selectCollection}
+          filterId={this.props.filterId}
+          collectionIds={this.props.collectionIds}
+          isEditable={this.props.isEditable}
+          onClose={this.props.onClose}
+          selectRecordsContainer={this.passRecordsOut}
         />
       </Modal>
     );
