@@ -2,7 +2,7 @@
     "meta.title": "plugin-find-finc-metadata-collection",
     "modal.label": "Sélectionner une collection de métadonnées",
     "searchButton.title": "Rechercher une collection de métadonnées",
-    "button.close": "Close",
+    "button.close": "Fermer",
     "modal.totalSelected": "Total selected: {count}",
     "button.save": "Save"
 }
