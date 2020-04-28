@@ -3,6 +3,6 @@
     "modal.label": "Выбрать коллекцию метаданных",
     "searchButton.title": "Найти коллекцию метаданных",
     "button.close": "Закрыть",
-    "modal.totalSelected": "Total selected: {count}",
+    "modal.totalSelected": "Всего выбрано: {счёт}",
     "button.save": "Сохранить"
 }
