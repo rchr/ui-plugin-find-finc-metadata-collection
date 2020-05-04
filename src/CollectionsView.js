@@ -75,17 +75,6 @@ export default class CollectionsView extends React.Component {
     freeContent: 100
   };
 
-  getArrayElementsCommaSeparated = (array) => {
-    let formatted = '';
-
-    if (array && array.length) {
-      for (let i = 0; i < array.length; i += 1) {
-        formatted += (i > 0 ? '; ' : '') + array[i];
-      }
-    }
-    return formatted;
-  }
-
   // fade in/out of filter-pane
   toggleFilterPane = () => {
     this.setState(curState => ({
@@ -261,7 +250,7 @@ export default class CollectionsView extends React.Component {
       mdSource: col => _.get(col, 'mdSource.name', '-'),
       permitted: col => col.permitted,
       selected: col => col.selected,
-      filters: col => this.getArrayElementsCommaSeparated(col.filters),
+      filters: col => col.filters.join('; '),
       freeContent: col => col.freeContent,
     };
 
