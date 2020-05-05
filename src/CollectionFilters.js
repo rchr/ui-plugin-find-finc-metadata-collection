@@ -24,6 +24,7 @@ class CollectionFilters extends React.Component {
       freeContent: [],
       permitted: [],
       mdSource: [],
+      status: [],
     }
   };
 
@@ -32,6 +33,7 @@ class CollectionFilters extends React.Component {
     freeContent: [],
     permitted: [],
     mdSource: [],
+    status: [],
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -131,6 +133,7 @@ class CollectionFilters extends React.Component {
         {this.renderCheckboxFilter('freeContent', 'Free content')}
         {this.renderCheckboxFilter('permitted', 'Usage permitted')}
         {this.renderCheckboxFilter('selected', 'Selected')}
+        {this.renderCheckboxFilter('status', 'Status')}
       </AccordionSet>
     );
   }
