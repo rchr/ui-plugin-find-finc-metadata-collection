@@ -68,6 +68,7 @@ export default class CollectionsView extends React.Component {
 
   columnWidths = {
     isChecked: 40,
+    status: 100,
     label: 230,
     mdSource: 230,
     permitted: 100,
@@ -179,6 +180,21 @@ export default class CollectionsView extends React.Component {
 
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
 
+  getStatus = (recordId) => {
+    let status;
+    if (this.getCheckedValueForFormatter(recordId)) {
+      status = 'assigned';
+    } else {
+      status = 'unassigned';
+    }
+
+    return status;
+  }
+
+  getCheckedValueForFormatter = (recordId) => {
+    return Boolean(this.state.checkedMap[recordId]);
+  }
+
   render() {
     const { filterData, children, contentRef, contentData, onNeedMoreData, queryGetter, querySetter, collection } = this.props;
     const { checkedMap, isAllChecked } = this.state;
@@ -187,7 +203,7 @@ export default class CollectionsView extends React.Component {
     const sortOrder = query.sort || '';
     const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
 
-    const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
+    const visibleColumns = ['isChecked', 'status', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
 
     const footer = (
       <PaneFooter footerClass={css.paneFooter}>
@@ -231,6 +247,7 @@ export default class CollectionsView extends React.Component {
           type="checkbox"
         />
       ),
+      status: 'Status',
       label: 'Label',
       mdSource: 'MdSource',
       permitted: 'Permitted',
@@ -246,6 +263,7 @@ export default class CollectionsView extends React.Component {
           onChange={this.props.isEditable ? () => this.toggleRecord(record) : undefined}
         />
       ),
+      status: record => this.getStatus(record.id),
       label: col => col.label,
       mdSource: col => _.get(col, 'mdSource.name', '-'),
       permitted: col => col.permitted,

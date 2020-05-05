@@ -32,6 +32,23 @@ const filterConfig = [
     name: 'mdSource',
     cql: 'mdSource',
     values: [],
+  },
+  {
+    label: 'Status',
+    name: 'status',
+    cql: 'status',
+    values: [
+      {
+        name: 'Unassigned',
+        cql: 'unassigned',
+        value: false
+      },
+      {
+        name: 'Assigned',
+        cql: 'assigned',
+        value: false
+      }
+    ],
   }
 ];
 
