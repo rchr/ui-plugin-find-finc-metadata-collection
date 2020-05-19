@@ -3,6 +3,6 @@
     "modal.label": "Sélectionner une collection de métadonnées",
     "searchButton.title": "Rechercher une collection de métadonnées",
     "button.close": "Fermer",
-    "modal.totalSelected": "Total selected: {count}",
+    "modal.totalSelected": "Total sélectionné: {count}",
     "button.save": "Sauvegarder"
 }
