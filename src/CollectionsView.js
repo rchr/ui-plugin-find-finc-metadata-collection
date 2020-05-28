@@ -48,6 +48,7 @@ export default class CollectionsView extends React.Component {
       filterPaneIsVisible: true,
       checkedMap: {},
       isAllChecked: false,
+      resultData: '',
     };
   }
 
@@ -195,6 +196,18 @@ export default class CollectionsView extends React.Component {
     return Boolean(this.state.checkedMap[recordId]);
   }
 
+  callbackFunction = (childData) => {
+    this.setState({ resultData: childData });
+  }
+
+  getMyData = () => {
+    if (this.state.resultData !== '') {
+      return this.state.resultData;
+    } else {
+      return this.props.contentData;
+    }
+  }
+
   render() {
     const { filterData, children, contentRef, contentData, onNeedMoreData, queryGetter, querySetter, collection } = this.props;
     const { checkedMap, isAllChecked } = this.state;
@@ -202,6 +215,8 @@ export default class CollectionsView extends React.Component {
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
     const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
+
+    // console.log(this.state.resultData);
 
     const visibleColumns = ['isChecked', 'status', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
 
@@ -272,6 +287,12 @@ export default class CollectionsView extends React.Component {
       freeContent: col => col.freeContent,
     };
 
+    // if (this.state.resultData !== '') {
+    //   const xxx = this.state.resultData;
+    // } else {
+    //   const xxx = this.props.contentData;
+    // }
+
     return (
       <div data-test-collections ref={contentRef}>
         <SearchAndSortQuery
@@ -341,6 +362,9 @@ export default class CollectionsView extends React.Component {
                           activeFilters={activeFilters.state}
                           filterData={filterData}
                           filterHandlers={getFilterHandlers()}
+                          checkedCollectionIds={_.keys(this.state.checkedMap)}
+                          contentData={contentData}
+                          dataCallback={this.callbackFunction}
                         />
                       </form>
                     </Pane>
@@ -357,7 +381,7 @@ export default class CollectionsView extends React.Component {
                       autosize
                       columnMapping={columnMapping}
                       columnWidths={this.columnWidths}
-                      contentData={contentData}
+                      contentData={this.getMyData()}
                       formatter={formatter}
                       id="list-collections"
                       isEmptyMessage="no results"
