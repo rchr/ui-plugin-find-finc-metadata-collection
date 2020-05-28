@@ -11,7 +11,7 @@
     "node": ">=6.0.0"
   },
   "stripes": {
-    "type": "plugin",
+    "actsAs": ["plugin"],
     "pluginType": "find-finc-metadata-collection",
     "displayName": "ui-plugin-find-finc-metadata-collection.meta.title",
     "okapiInterfaces": {
