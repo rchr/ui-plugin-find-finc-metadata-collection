@@ -28,10 +28,10 @@ class CollectionSearchContainer extends React.Component {
             'cql.allRecords=1',
             '(label="%{query.query}*")',
             {
-              'Collection Name': 'label'
+              'Collection Name': 'label',
             },
             filterConfig,
-            2,
+            2
           ),
         },
         staticFallback: { params: {} },
@@ -41,7 +41,12 @@ class CollectionSearchContainer extends React.Component {
       type: 'okapi',
       records: 'tinyMetadataSources',
       path: 'finc-config/tiny-metadata-sources',
-      resourceShouldRefresh: true
+      resourceShouldRefresh: true,
+    },
+    filterToCollections: {
+      type: 'okapi',
+      path: 'finc-select/filters/!{filterId}/collections',
+      records: 'collectionIds',
     },
     query: { initialValue: {} },
     resultCount: { initialValue: INITIAL_RESULT_COUNT },
@@ -60,21 +65,29 @@ class CollectionSearchContainer extends React.Component {
       okapi: PropTypes.object,
     }),
     selectRecordsContainer: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     selectRecordsContainer: _.noop,
-  }
+  };
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      assignedStatus: '',
+    };
 
     this.logger = props.stripes.logger;
     this.searchField = React.createRef();
   }
 
   componentDidMount() {
-    this.collection = new StripesConnectedSource(this.props, this.logger, 'metadataCollections');
+    this.collection = new StripesConnectedSource(
+      this.props,
+      this.logger,
+      'metadataCollections'
+    );
 
     if (this.searchField.current) {
       this.searchField.current.focus();
@@ -86,12 +99,31 @@ class CollectionSearchContainer extends React.Component {
   }
 
   querySetter = ({ nsValues }) => {
+    // Check if query contains 'assigned'.
+    // If this is the case, remove the assigned filter from the query, and set it to this component's state.
+    // Attention: This is hacky!
+    const regexp = /,?assigned\.(yes|no)/gi;
+    const filters = _.get(nsValues, 'filters', '');
+    if (regexp.test(filters)) {
+      let withoutAssigned = filters.replace(regexp, '');
+      withoutAssigned = withoutAssigned.replace(/(^,)|(,$)/g, '');
+      nsValues.filters = withoutAssigned;
+
+      const assignedStatus = filters.match(regexp);
+      this.setState({
+        assignedStatus,
+      });
+    } else {
+      this.setState({
+        assignedStatus: '',
+      });
+    }
     this.props.mutator.query.update(nsValues);
-  }
+  };
 
   queryGetter = () => {
     return _.get(this.props.resources, 'query', {});
-  }
+  };
 
   handleNeedMoreData = () => {
     if (this.collection) {
@@ -103,11 +135,11 @@ class CollectionSearchContainer extends React.Component {
     const qindex = e.target.value;
 
     this.props.mutator.query.update({ qindex });
-  }
+  };
 
-  passRecordsOut = records => {
+  passRecordsOut = (records) => {
     this.props.selectRecordsContainer(records);
-  }
+  };
 
   render() {
     const { onSelectRow, resources } = this.props;
@@ -118,6 +150,7 @@ class CollectionSearchContainer extends React.Component {
 
     return (
       <CollectionsView
+        assignedStatus={this.state.assignedStatus}
         filterId={this.props.filterId}
         collectionIds={this.props.collectionIds}
         isEditable={this.props.isEditable}
@@ -131,6 +164,11 @@ class CollectionSearchContainer extends React.Component {
         filterData={{
           mdSources: _.get(this.props.resources, 'mdSources.records', []),
         }}
+        filterToCollections={_.get(
+          resources,
+          'filterToCollections.records',
+          []
+        )}
         onClose={this.props.onClose}
         stripes={this.props.stripes}
         onSaveMultiple={this.passRecordsOut}
@@ -139,4 +177,6 @@ class CollectionSearchContainer extends React.Component {
   }
 }
 
-export default stripesConnect(CollectionSearchContainer, { dataKey: 'find_collection' });
+export default stripesConnect(CollectionSearchContainer, {
+  dataKey: 'find_collection',
+});

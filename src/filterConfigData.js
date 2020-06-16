@@ -28,6 +28,15 @@ const filterConfig = [
     ],
   },
   {
+    label: 'Assigned',
+    name: 'assigned',
+    cql: 'assigned',
+    values: [
+      { name: 'Yes', cql: 'yes' },
+      { name: 'No', cql: 'no' }
+    ],
+  },
+  {
     label: 'Source',
     name: 'mdSource',
     cql: 'mdSource',

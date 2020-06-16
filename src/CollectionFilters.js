@@ -24,7 +24,8 @@ class CollectionFilters extends React.Component {
       freeContent: [],
       permitted: [],
       mdSource: [],
-    }
+      assigned: [],
+    },
   };
 
   state = {
@@ -32,13 +33,14 @@ class CollectionFilters extends React.Component {
     freeContent: [],
     permitted: [],
     mdSource: [],
-  }
+    assigned: [],
+  };
 
   static getDerivedStateFromProps(props, state) {
     const newState = {};
     const arr = [];
 
-    filterConfig.forEach(filter => {
+    filterConfig.forEach((filter) => {
       const newValues = [];
       let values = {};
       if (filter === 'mdSource') {
@@ -52,15 +54,18 @@ class CollectionFilters extends React.Component {
       values.forEach((key) => {
         let newValue = {};
         newValue = {
-          'value': key.cql,
-          'label': key.name,
+          value: key.cql,
+          label: key.name,
         };
         newValues.push(newValue);
       });
 
       arr[filter.name] = newValues;
 
-      if (state[filter.name] && arr[filter.name].length !== state[filter.name].length) {
+      if (
+        state[filter.name] &&
+        arr[filter.name].length !== state[filter.name].length
+      ) {
         newState[filter.name] = arr[filter.name];
       }
     });
@@ -80,23 +85,30 @@ class CollectionFilters extends React.Component {
         header={FilterAccordionHeader}
         id={`filter-accordion-${key}`}
         label={`${name}`}
-        onClearFilter={() => { this.props.filterHandlers.clearGroup(key); }}
+        onClearFilter={() => {
+          this.props.filterHandlers.clearGroup(key);
+        }}
         separator={false}
         {...props}
       >
         <CheckboxFilter
           dataOptions={this.state[key]}
           name={key}
-          onChange={(group) => { this.props.filterHandlers.state({ ...activeFilters, [group.name]: group.values }); }}
+          onChange={(group) => {
+            this.props.filterHandlers.state({
+              ...activeFilters,
+              [group.name]: group.values,
+            });
+          }}
           selectedValues={groupFilters}
         />
       </Accordion>
     );
-  }
+  };
 
   renderMetadataSourceFilter = () => {
     const mdSources = this.props.filterData.mdSources;
-    const dataOptions = mdSources.map(mdSource => ({
+    const dataOptions = mdSources.map((mdSource) => ({
       value: mdSource.id,
       label: mdSource.label,
     }));
@@ -110,19 +122,26 @@ class CollectionFilters extends React.Component {
         header={FilterAccordionHeader}
         id="filter-accordion-mdSource"
         label="Metadata source"
-        onClearFilter={() => { this.props.filterHandlers.clearGroup('mdSource'); }}
+        onClearFilter={() => {
+          this.props.filterHandlers.clearGroup('mdSource');
+        }}
         separator={false}
       >
         <Selection
           dataOptions={dataOptions}
           id="mdSource-filter"
-          onChange={value => this.props.filterHandlers.state({ ...activeFilters, mdSource: [value] })}
+          onChange={(value) =>
+            this.props.filterHandlers.state({
+              ...activeFilters,
+              mdSource: [value],
+            })
+          }
           placeholder="Select a Source"
           value={mdSourceFilters[0] || ''}
         />
       </Accordion>
     );
-  }
+  };
 
   render() {
     return (
@@ -131,6 +150,7 @@ class CollectionFilters extends React.Component {
         {this.renderCheckboxFilter('freeContent', 'Free content')}
         {this.renderCheckboxFilter('permitted', 'Usage permitted')}
         {this.renderCheckboxFilter('selected', 'Selected')}
+        {this.renderCheckboxFilter('assigned', 'Assigned')}
       </AccordionSet>
     );
   }

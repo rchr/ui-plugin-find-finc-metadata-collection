@@ -180,14 +180,28 @@ export default class CollectionsView extends React.Component {
   isSelected = ({ collection }) => Boolean(this.state.checkedMap[collection.id]);
 
   render() {
-    const { filterData, children, contentRef, contentData, onNeedMoreData, queryGetter, querySetter, collection } = this.props;
+    const { assignedStatus, filterData, children, contentRef, contentData, filterToCollections, onNeedMoreData, queryGetter, querySetter, collection } = this.props;
     const { checkedMap, isAllChecked } = this.state;
-    const count = collection ? collection.totalCount() : 0;
+    // const count = collection ? collection.totalCount() : 0;
     const query = queryGetter() || {};
     const sortOrder = query.sort || '';
     const checkedRecordsLength = this.state.checkedMap ? Object.keys(this.state.checkedMap).length : 0;
 
     const visibleColumns = ['isChecked', 'label', 'mdSource', 'permitted', 'filters', 'freeContent'];
+
+    // Here we filter collections is they are assigned or unassigned
+    // MAybe this block is better suited in CollectionsSearchContainer.js?
+    console.log(`Here you can filter your contenData by filterCollections ${filterToCollections} and the assignedStatus ${assignedStatus}`);
+    let filtered = contentData;
+    if (_.findIndex(assignedStatus, s => s.includes('yes')) >= 0 && _.findIndex(assignedStatus, s => s.includes('no')) === -1) {
+      filtered = contentData.filter(c => filterToCollections.includes(c.id));
+      console.log(`The assigned collections are ${filtered.map(c => c.id).join(', ')}`);
+    } else if (_.findIndex(assignedStatus, s => s.includes('no')) >= 0 && _.findIndex(assignedStatus, s => s.includes('yes')) === -1) {
+      filtered = contentData.filter(c => !filterToCollections.includes(c.id));
+      console.log(`The unassigned collections are ${filtered.map(c => c.id).join(', ')}`);
+    }
+    // I am a bit unsure if we can safely replace count by this statement
+    const count = filtered ? filtered.length : 0;
 
     const footer = (
       <PaneFooter footerClass={css.paneFooter}>
@@ -339,7 +353,7 @@ export default class CollectionsView extends React.Component {
                       autosize
                       columnMapping={columnMapping}
                       columnWidths={this.columnWidths}
-                      contentData={contentData}
+                      contentData={filtered}
                       formatter={formatter}
                       id="list-collections"
                       isEmptyMessage="no results"
@@ -367,6 +381,7 @@ export default class CollectionsView extends React.Component {
 }
 
 CollectionsView.propTypes = Object.freeze({
+  assignedStatus: PropTypes.string,
   onSaveMultiple: PropTypes.func,
   collectionIds: PropTypes.arrayOf(PropTypes.object),
   isEditable: PropTypes.bool,
@@ -376,6 +391,7 @@ CollectionsView.propTypes = Object.freeze({
   filterData: PropTypes.shape({
     mdSources: PropTypes.array,
   }),
+  filterToCollections: PropTypes.arrayOf(PropTypes.shape()),
   onNeedMoreData: PropTypes.func,
   queryGetter: PropTypes.func.isRequired,
   querySetter: PropTypes.func.isRequired,
